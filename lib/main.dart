@@ -1,9 +1,19 @@
 import 'dart:io';
 
+import 'package:appcenter_analytics/appcenter_analytics.dart';
+import 'package:appcenter_crashes/appcenter_crashes.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled1/trommed_video.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 import 'package:video_compress/video_compress.dart';
+
+
+import 'package:appcenter/appcenter.dart';
+import 'package:appcenter_analytics/appcenter_analytics.dart';
+import 'package:appcenter_crashes/appcenter_crashes.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -21,6 +31,19 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
+
+
+  startServices()async{
+
+    final ios = defaultTargetPlatform == TargetPlatform.iOS;
+
+    var app_secret = ios ? "iOSGuid" : "AndroidGuid";
+    await AppCenter.start(app_secret, [AppCenterAnalytics.id, AppCenterCrashes.id]);
+
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,6 +119,7 @@ class _TrimmerViewState extends State<TrimmerView> {
       setState(() {
         _progressVisibility = false;
         filePath = value;
+
         print("========${value}");
       });
     });
@@ -106,7 +130,6 @@ class _TrimmerViewState extends State<TrimmerView> {
 
 
   compressVideo(String? value)async{
-
     setState(() {
       isCompress = true;
     });
@@ -179,6 +202,11 @@ class _TrimmerViewState extends State<TrimmerView> {
                         : () async {
                       _saveVideo().then((outputPath) {
                         print('OUTPUT PATH: $outputPath');
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) {
+                            return TrimmedVideo(File(filePath));
+                          }),
+                        );
                         final snackBar = SnackBar(
                             content: Text('Video Saved successfully'));
                         ScaffoldMessenger.of(context).showSnackBar(

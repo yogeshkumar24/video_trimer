@@ -45,6 +45,34 @@ android {
     }
 }
 
+android {
+
+
+    flavorDimensions "distribute"
+    productFlavors {
+        appCenter {
+            dimension "distribute"
+        }
+
+        googlePlay {
+            dimension "distribute"
+        }
+    }
+
+    // This is likely needed, see https://github.com/flutter/flutter/issues/58247
+    lintOptions {
+        disable 'InvalidPackage'
+        checkReleaseBuilds false
+    }
+}
+
 flutter {
     source '../..'
+}
+
+
+dependencies {
+    def appCenterSdkVersion = '4.1.0'
+    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
 }
